@@ -24,7 +24,7 @@ class ImageLabel extends JLabel
 
 public class ItemLabel extends CustomLabel
 {
-	JLabel itemImageLabel, itemNameLabel;
+	JLabel itemImageLabel;
 	
 	public ItemLabel()
 	{
@@ -39,21 +39,18 @@ public class ItemLabel extends CustomLabel
 
 	protected void addComponent()
 	{
-//		this.itemImageLabel = new JLabel(new ImageIcon("res/item/weapon/Excalibur.png"));
-//		this.itemNameLabel = new JLabel("Excalibur");
-//		this.itemNameLabel.setFont(new Font("Verdana", Font.BOLD, 14));
-		
+		this.itemImageLabel = new JLabel(new ImageIcon("res/item/weapon/Excalibur.png"));		
 		this.itemImageLabel = new JLabel();
-		this.itemNameLabel = new JLabel("Item Name");
-		this.itemNameLabel.setFont(new Font("Verdana", Font.BOLD, 12));
-		this.itemImageLabel.setBackground(Color.BLACK);
-		this.itemNameLabel.setBackground(Color.LIGHT_GRAY);
-		this.itemNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		this.itemImageLabel.setBackground(Color.WHITE);
 		this.itemImageLabel.setOpaque(true);
-		this.itemNameLabel.setOpaque(true);
-		
 		this.add(itemImageLabel);
-		this.add(itemNameLabel, BorderLayout.SOUTH);
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		
+		g.drawString("12", 45, 55);
 	}
 	
 	public void drawItem(ImageIcon icon, String name)
@@ -61,7 +58,6 @@ public class ItemLabel extends CustomLabel
 		this.itemImageLabel.setOpaque(false);
 		this.itemImageLabel.setIcon(icon);
 		this.itemImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		this.itemNameLabel.setText(name);
 	}
 	
 //	public Image getScaledImage(ImageIcon srcImg)
