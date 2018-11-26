@@ -19,7 +19,7 @@ public class MainFrame extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(null);
 		
-		this.pack();
+//		this.pack();
 		
 		this.setSize(720, 740);
 		this.setResizable(false);
@@ -49,6 +49,7 @@ public class MainFrame extends JFrame
 		this.add(cp4);
 		this.add(cp5);
 		
-		
+		this.revalidate();
+		this.repaint();
 	}
 }
