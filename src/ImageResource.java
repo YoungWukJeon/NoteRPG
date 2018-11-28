@@ -14,6 +14,8 @@ public class ImageResource
 	public static ImageIcon guiltyThornNovel;
 	public static ImageIcon twoHandsSwords;
 	
+	public static ImageIcon itemBorder;
+	
 	public ImageResource()
 	{
 		sword = new ImageIcon("res/item/weapon/Excalibur.png");
@@ -23,5 +25,7 @@ public class ImageResource
 		elucidator = new ImageIcon("res/item/weapon/Elucidator.png");
 		guiltyThornNovel = new ImageIcon("res/item/weapon/Guilty Thorn Novel.png");
 		twoHandsSwords = new ImageIcon("res/item/weapon/Two hands swords.png");
+		
+		itemBorder = new ImageIcon("res/layout/item_border.png");
 	}
 }

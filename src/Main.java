@@ -4,6 +4,7 @@ public class Main
 	{
 		System.out.println("Start!!");
 		
+		ThreadPool.getInstance();
 		new ImageResource();
 		new MainFrame();
 	}

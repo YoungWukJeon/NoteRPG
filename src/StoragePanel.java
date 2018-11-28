@@ -23,7 +23,7 @@ public class StoragePanel extends CustomPanel
 		this.layoutY = 5;
 		
 		this.setLayout(new GridLayout(this.layoutY, this.layoutX));
-		this.setBackground(Color.BLUE);
+		this.setBackground(new Color(210, 210, 210));
 		
 		// data //
 		this.storageList = new LinkedList[this.layoutX * this.layoutY];

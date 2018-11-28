@@ -1,10 +1,17 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.LinkedList;
+
 import javax.swing.*;
 import javax.swing.event.*;
 
 public class InventoryPanel extends CustomPanel
 {
+	int layoutX;
+	int layoutY;
+	ItemLabel [][]itemLabel;
+	LinkedList<Item> []inventoryList;
+	
 	public InventoryPanel()
 	{
 		super();
@@ -12,12 +19,81 @@ public class InventoryPanel extends CustomPanel
 	
 	protected void init()
 	{
-		this.setLayout(new GridLayout(3, 2));
-		this.setBackground(Color.yellow);
+		this.layoutX = 4;
+		this.layoutY = 7;
+		
+		this.setLayout(new GridLayout(this.layoutY, this.layoutX));
+		this.setBackground(Color.WHITE);
+		
+		// data //
+		this.inventoryList = new LinkedList[this.layoutX * this.layoutY];
+		
+		for( int i = 0; i < this.inventoryList.length; ++i )
+			this.inventoryList[i] = new LinkedList<> ();
+		
+//		Item item1 = new Item();
+//		Item item2 = new Item();
+//		Item item3 = new Item();
+//		Item item4 = new Item();
+//		Item item5 = new Item();
+//		Item item6 = new Item();
+//		Item item7 = new Item();
+//		
+//		item1.setImageIcon(ImageResource.sword);
+//		item1.setGenerateId(1);
+//		item1.setItemId(1);
+//		item1.setName("Excalibur");
+//		item2.setImageIcon(ImageResource.bow);
+//		item2.setGenerateId(2);
+//		item2.setItemId(2);
+//		item2.setName("Bow");
+//		item3.setImageIcon(ImageResource.crossedSwords);
+//		item3.setGenerateId(3);
+//		item3.setItemId(3);
+//		item3.setName("Crossed swords");
+//		item4.setImageIcon(ImageResource.darkRepulser);
+//		item4.setGenerateId(4);
+//		item4.setItemId(4);
+//		item4.setName("Dark repulser");
+//		item4.setEnhancement(6);
+//		item5.setImageIcon(ImageResource.elucidator);
+//		item5.setGenerateId(5);
+//		item5.setItemId(5);
+//		item5.setName("Elucidator");
+//		item5.setEnhancement(12);
+//		item6.setImageIcon(ImageResource.guiltyThornNovel);
+//		item6.setGenerateId(6);
+//		item6.setItemId(6);
+//		item6.setName("Guilty Thorn Novel");
+//		item7.setImageIcon(ImageResource.twoHandsSwords);
+//		item7.setGenerateId(7);
+//		item7.setItemId(7);
+//		item7.setName("Two hands swords");
+//	
+//		this.inventoryList[1].add(item1);
+//		this.inventoryList[2].add(item2);
+//		this.inventoryList[25].add(item3);
+//		this.inventoryList[26].add(item4);
+//		this.inventoryList[27].add(item5);
+//		this.inventoryList[15].add(item6);
+//		this.inventoryList[16].add(item7);
+		
+		// End //
 	}
 	
 	protected void addComponent()
 	{
+		this.itemLabel = new ItemLabel[this.layoutY][this.layoutX];
 		
+		for( int i = 0; i < this.layoutY; ++i )
+		{
+			for( int j = 0; j < this.layoutX; ++j )
+			{				
+				if( this.inventoryList[i * this.layoutX + j].size() > 0 )					
+					this.add(this.itemLabel[i][j] = new ItemLabel(this.inventoryList[i * this.layoutX + j]));
+				else
+					this.add(this.itemLabel[i][j] = new ItemLabel());
+			}
+		}
 	}
 }

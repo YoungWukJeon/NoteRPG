@@ -21,12 +21,10 @@ public class MainFrame extends JFrame
 		
 //		this.pack();
 		
-		this.setSize(720, 740);
+		this.setSize(725, 755);
 		this.setResizable(false);
 		this.setLocationRelativeTo(getOwner());
 		this.setVisible(true);
-		
-		
 	}
 	
 	private void addComponent()

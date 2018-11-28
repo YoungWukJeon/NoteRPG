@@ -6,10 +6,9 @@ import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.event.*;
 
-public class ItemLabel extends CustomLabel implements MouseListener, Runnable
+public class ItemLabel extends CustomLabel implements MouseListener, EventCallBackListener
 {
 	private LinkedList<Item> itemList;
-	private Thread itemDetailViewThread;
 	
 	public ItemLabel(LinkedList<Item> itemList)
 	{
@@ -25,9 +24,9 @@ public class ItemLabel extends CustomLabel implements MouseListener, Runnable
 	protected void init()
 	{
 		this.setLayout(new BorderLayout());
-		this.setBackground(Color.WHITE);
-		this.setOpaque(true);
-		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//		this.setBackground(Color.WHITE);
+//		this.setOpaque(true);
+//		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.addMouseListener(this);
 	}
 
@@ -49,27 +48,29 @@ public class ItemLabel extends CustomLabel implements MouseListener, Runnable
 	{
 		super.paintComponent(g);
 		
+		g.drawImage(ImageResource.itemBorder.getImage(), 0, 0, this.getWidth() - 1, this.getHeight() - 1, this);
+		
 		if( this.getItemList() != null )
-			g.drawImage(this.getItem(0).getImageIcon().getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+			g.drawImage(this.getItem(0).getImageIcon().getImage(), (int) (this.getWidth() * 0.1), (int) (this.getHeight() * 0.1), this.getWidth() - (int) (this.getWidth() * 0.2), this.getHeight() - (int) (this.getHeight() * 0.2), this);
 		
 		if( this.getItemList() != null && !this.getItem(0).isRedundant() && this.getItem(0).getEnhancement() > 0 )
 		{
 			g.setColor(Color.RED);
 			
 			if( this.getItem(0).getEnhancement() > 9 )
-				g.drawString("+" + Integer.toString(this.getItem(0).getEnhancement()), this.getWidth() - 23, this.getHeight() - 45);
+				g.drawString("+" + Integer.toString(this.getItem(0).getEnhancement()), this.getWidth() - (int) (this.getWidth() * 0.45), this.getHeight() - (int) (this.getHeight() * 0.75));
 			else
-				g.drawString("+" + Integer.toString(this.getItem(0).getEnhancement()), this.getWidth() - 17, this.getHeight() - 45);
+				g.drawString("+" + Integer.toString(this.getItem(0).getEnhancement()), this.getWidth() - (int) (this.getWidth() * 0.35), this.getHeight() - (int) (this.getHeight() * 0.75));
 		}
 		
 		if( this.getItemList() != null && this.getItem(0).isRedundant() )
 		{
 			if( this.getItemList().size() > 99 )
-				g.drawString("99+", this.getWidth() - 20, this.getHeight() - 5);
+				g.drawString("99+", this.getWidth() - (int) (this.getWidth() * 0.67), this.getHeight() - (int) (this.getHeight() * 0.08));
 			else if( this.getItemList().size() > 9 )
-				g.drawString(Integer.toString(this.getItemList().size()), this.getWidth() - 15, this.getHeight() - 5);
+				g.drawString(Integer.toString(this.getItemList().size()), this.getWidth() - (int) (this.getWidth() * 0.25), this.getHeight() - (int) (this.getHeight() * 0.08));
 			else
-				g.drawString(Integer.toString(this.getItemList().size()), this.getWidth() - 10, this.getHeight() - 5);
+				g.drawString(Integer.toString(this.getItemList().size()), this.getWidth() - (int) (this.getWidth() * 0.17), this.getHeight() - (int) (this.getHeight() * 0.08));
 		}
 	}
 
@@ -83,19 +84,16 @@ public class ItemLabel extends CustomLabel implements MouseListener, Runnable
 	@Override
 	public void mouseEntered(MouseEvent e)
 	{
-		if( this.itemDetailViewThread == null || !this.itemDetailViewThread.isAlive() )
-		{
-			itemDetailViewThread = new Thread(this);
-			this.itemDetailViewThread.start();
-		}
+		if( !ThreadPool.INSTANCE.isAlive(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW) )
+			ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
+		
+		ThreadPool.INSTANCE.startThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e)
 	{
-		if( this.itemDetailViewThread == null || !this.itemDetailViewThread.isAlive() )
-			this.itemDetailViewThread.interrupt();
-		
+		ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
 		// Show Panel Visible
 	}
 
@@ -106,18 +104,19 @@ public class ItemLabel extends CustomLabel implements MouseListener, Runnable
 	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void run()
+	public void nextWork(boolean isSuccessful, Object result)
 	{
-		try
+		if( isSuccessful )
 		{
-			Thread.sleep(1000);
+			System.out.println("Work!!");
 			
-			// Show Panel Visible
+			if( this.getItemList() != null )
+				System.out.println(this.getItem(0));
+			else
+				System.out.println("No item");
 		}
-		catch(InterruptedException ie)
-		{
+		else
 			System.out.println("MouseExited");
-		}
 	}
 	
 //	public void drawItem(ImageIcon icon, String name)
