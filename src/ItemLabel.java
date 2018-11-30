@@ -84,16 +84,16 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 	@Override
 	public void mouseEntered(MouseEvent e)
 	{
-		if( !ThreadPool.INSTANCE.isAlive(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW) )
-			ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
-		
-		ThreadPool.INSTANCE.startThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
+//		if( !ThreadPool.INSTANCE.isAlive(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW) )
+//			ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
+//		
+//		ThreadPool.INSTANCE.startThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e)
 	{
-		ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
+//		ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
 		// Show Panel Visible
 	}
 
