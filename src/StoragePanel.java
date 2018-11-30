@@ -1,9 +1,11 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import java.util.LinkedList;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.html.HTMLEditorKit;
 
 public class StoragePanel extends CustomPanel
 {
@@ -90,10 +92,7 @@ public class StoragePanel extends CustomPanel
 			for( int j = 0; j < this.layoutX; ++j )
 			{				
 				if( this.storageList[i * this.layoutX + j].size() > 0 )				
-				{
 					this.add(this.itemLabel[i][j] = new ItemLabel(this.storageList[i * this.layoutX + j]));
-//					this.itemLabel[i][j].setToolTipText(this.itemLabel[i][j].getItem(0).getName());
-				}
 				else
 					this.add(this.itemLabel[i][j] = new ItemLabel());
 			}

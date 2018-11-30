@@ -1,10 +1,71 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.LinkedList;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.Style;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+
+class ItemToolTip
+{
+	private static final String ITEM_TOOLTIP_CSS = "res/etc/item_tooltip.css"; 
+	public static StyleSheet styleSheet;
+	
+	public static StyleSheet loadStyleSheet()
+	{	
+		if( styleSheet == null )
+		{				
+			try
+			{
+				InputStream is = new FileInputStream(ITEM_TOOLTIP_CSS);
+				BufferedReader br = new BufferedReader(new InputStreamReader(is));
+				styleSheet = new StyleSheet();
+				styleSheet.loadRules(br, null);
+				
+				Enumeration rules = styleSheet.getStyleNames();
+		         while (rules.hasMoreElements()) {
+		             String name = (String) rules.nextElement();
+		             Style rule = styleSheet.getStyle(name);
+		             System.out.println(rule.toString());
+		         }
+				
+				br.close();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				styleSheet = null;
+			}
+		}
+		
+		return styleSheet;
+	}
+	
+	public static String getToolTipTextByHTML(Item item)
+	{
+//		URL url = ImageResource.class.getResource(this.itemLabel[i][j].getItem(0).getImageIcon().getDescription());
+		
+		String html = 
+				"<html>" +
+						"<div>" +
+							"<img width=150 height=150 src='file:" + item.getImageIcon().getDescription() + "' />" +
+						"</div>" +
+				"</html>";
+		
+		System.out.println(html);
+	
+		return html;
+	}
+}
 
 public class ItemLabel extends CustomLabel implements MouseListener, EventCallBackListener
 {
@@ -12,8 +73,9 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 	
 	public ItemLabel(LinkedList<Item> itemList)
 	{
-		this();
 		this.itemList = itemList;
+		this.init();
+		this.addComponent();
 	}
 	
 	public ItemLabel()
@@ -32,6 +94,12 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 
 	protected void addComponent()
 	{
+		if( this.getItemList() != null )
+		{
+			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
+			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
+		}
 	}
 	
 	public LinkedList<Item> getItemList()
