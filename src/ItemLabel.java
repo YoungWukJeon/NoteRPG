@@ -57,7 +57,7 @@ class ItemToolTip
 		String html = 
 				"<html>" +
 						"<div>" +
-							"<img width=150 height=150 src='file:" + item.getImageIcon().getDescription() + "' />" +
+							"<image src='file:" + item.getImageIcon().getDescription() + "' />" +
 						"</div>" +
 				"</html>";
 		
@@ -99,6 +99,7 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
 			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
 			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
+			ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 		}
 	}
 	
