@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,9 +10,14 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.LinkedList;
 
+import javax.print.attribute.AttributeSet;
+import javax.print.attribute.AttributeSetUtilities;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.Style;
+import javax.swing.text.html.HTML.Attribute;
+import javax.swing.text.html.CSS;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
@@ -31,12 +37,13 @@ class ItemToolTip
 				styleSheet = new StyleSheet();
 				styleSheet.loadRules(br, null);
 				
-				Enumeration rules = styleSheet.getStyleNames();
-		         while (rules.hasMoreElements()) {
-		             String name = (String) rules.nextElement();
-		             Style rule = styleSheet.getStyle(name);
-		             System.out.println(rule.toString());
-		         }
+				Enumeration<?> rules = styleSheet.getStyleNames();
+		        while (rules.hasMoreElements()) 
+		        {
+		        	String name = (String) rules.nextElement();
+		        	Style rule = styleSheet.getStyle(name);
+		        	System.out.println(rule.toString());
+		        }
 				
 				br.close();
 			}
@@ -56,12 +63,39 @@ class ItemToolTip
 		
 		String html = 
 				"<html>" +
-						"<div>" +
-							"<image src='file:" + item.getImageIcon().getDescription() + "' />" +
-						"</div>" +
+					"<div id='item-tooltip-area'>" + 
+						"<div style='background: blue;' id='item-image-area'>" + 
+							"<div id='item-enhancement-area'>+" + item.getEnhancement() + "</div>" + 
+							"<div id='item-image'>" +
+								"<img width=170 height=170 src='file:" + item.getImageIcon().getDescription() + "' />" +
+							"</div>" +
+							"<div id='item-rating-area'>★ ★ ★</div>" + 
+						"</div>" + 
+						"<div id='item-info-area'>" + 
+							"<div id='item-info' style='background: green; background-attachment: scroll;'>" + 
+								"<div id='item-info-name'>" + item.getName() + "(+" + item.getEnhancement() + ")</div>" +
+								"<div id='item-info-required'>Required 115Lv</div>" + 
+								"<div id='item-info-option'>" + 
+									"ATK 2150<br>" + 
+									"STR 80<br>" + 
+									"DEX 50<br>" + 
+									"STR 80<br>" + 
+									"DEX 50<br>" + 
+									"STR 80<br>" + 
+									"DEX 50<br>" + 
+									"STR 80<br>" + 
+									"DEX 50<br>" + 
+								"</div>" + 
+							"</div>" +
+							"<div id='item-detail' style='background-attachment: scroll;'>" + 
+								"&nbsp고대의 마왕 벨제부브를 토벌하고 얻은 마검이다." + 
+								"드롭할 수 있는 무기 중에서 최상위 클래스에 속한다.<br><br><br><br>ddd<br><br>dd" + 
+							"</div>" + 
+						"</div>" + 
+					"</div>" +
 				"</html>";
 		
-		System.out.println(html);
+//		System.out.println(html);
 	
 		return html;
 	}
@@ -98,9 +132,20 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 		{
 			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
 			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
+//			htmlEditorKit.getStyleSheet().addRule("div { position: inherited; }");			
 			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
 			ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 		}
+	}
+	
+	public JToolTip createToolTip()
+	{
+		JToolTip tip = super.createToolTip();
+        tip.setBackground(new Color(0, 0, 0, 210));
+        tip.setOpaque(true);
+        this.repaint();
+        
+        return tip;
 	}
 	
 	public LinkedList<Item> getItemList()
