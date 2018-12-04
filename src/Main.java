@@ -4,7 +4,8 @@ public class Main
 	{
 		System.out.println("Start!!");
 		
-		ThreadPool.getInstance();
+//		ThreadPool.getInstance();
+		ItemDetailViewDialog.getInstance();
 		new ImageResource();
 		new MainFrame();
 	}

@@ -1,11 +1,9 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 import java.util.LinkedList;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.text.html.HTMLEditorKit;
 
 public class StoragePanel extends CustomPanel
 {

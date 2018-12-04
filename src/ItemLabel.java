@@ -10,14 +10,9 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.LinkedList;
 
-import javax.print.attribute.AttributeSet;
-import javax.print.attribute.AttributeSetUtilities;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.Style;
-import javax.swing.text.html.HTML.Attribute;
-import javax.swing.text.html.CSS;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
@@ -101,7 +96,7 @@ class ItemToolTip
 	}
 }
 
-public class ItemLabel extends CustomLabel implements MouseListener, EventCallBackListener
+public class ItemLabel extends CustomLabel
 {
 	private LinkedList<Item> itemList;
 	
@@ -109,7 +104,6 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 	{
 		this.itemList = itemList;
 		this.init();
-		this.addComponent();
 	}
 	
 	public ItemLabel()
@@ -120,33 +114,32 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 	protected void init()
 	{
 		this.setLayout(new BorderLayout());
-//		this.setBackground(Color.WHITE);
-//		this.setOpaque(true);
 //		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		this.addMouseListener(this);
-	}
-
-	protected void addComponent()
-	{
+		
+//		if( this.getItemList() != null )
+//		{
+//			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+//			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
+////			htmlEditorKit.getStyleSheet().addRule("div { position: inherited; }");			
+//			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
+//			ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
+//		}
+		
 		if( this.getItemList() != null )
-		{
-			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
-//			htmlEditorKit.getStyleSheet().addRule("div { position: inherited; }");			
-			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
-			ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
-		}
+			this.addMouseListener(new ItemMouseAdapter(this.getItem(0)));
+		else
+			this.addMouseListener(new NoItemMouseAdapter());
 	}
 	
-	public JToolTip createToolTip()
-	{
-		JToolTip tip = super.createToolTip();
-        tip.setBackground(new Color(0, 0, 0, 210));
-        tip.setOpaque(true);
-        this.repaint();
-        
-        return tip;
-	}
+//	public JToolTip createToolTip()
+//	{
+//		JToolTip tip = super.createToolTip();
+//        tip.setBackground(new Color(0, 0, 0, 210));
+//        tip.setOpaque(true);
+//        this.repaint();
+//        
+//        return tip;
+//	}
 	
 	public LinkedList<Item> getItemList()
 	{
@@ -187,68 +180,43 @@ public class ItemLabel extends CustomLabel implements MouseListener, EventCallBa
 				g.drawString(Integer.toString(this.getItemList().size()), this.getWidth() - (int) (this.getWidth() * 0.17), this.getHeight() - (int) (this.getHeight() * 0.08));
 		}
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0)
+	
+	class ItemMouseAdapter extends MouseAdapter
 	{
-		if( this.getItemList() != null )
-			System.out.println(this.getItem(0).toString());
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e)
-	{
-//		if( !ThreadPool.INSTANCE.isAlive(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW) )
-//			ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
-//		
-//		ThreadPool.INSTANCE.startThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e)
-	{
-//		ThreadPool.INSTANCE.stopThread(ThreadPool.THREAD_TYPE.ITEM_DETAIL_VIEW, this);
-		// Show Panel Visible
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
-	@Override
-	public void nextWork(boolean isSuccessful, Object result)
-	{
-		if( isSuccessful )
+		private Item item;
+		
+		ItemMouseAdapter(Item item)
 		{
-			System.out.println("Work!!");
-			
-			if( this.getItemList() != null )
-				System.out.println(this.getItem(0));
-			else
-				System.out.println("No item");
+			this.item = item;
 		}
-		else
-			System.out.println("MouseExited");
+		
+		@Override
+		public void mouseClicked(MouseEvent arg0)
+		{
+			System.out.println(this.item.toString());
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e)
+		{
+			ItemDetailViewDialog.INSTANCE.startThread(this.item);
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e)
+		{
+			// sleep이 종료된 후에 마우스를 이동했을 경우 다른 곳에서 Dialog가 나타나는 것을 방지
+			ItemDetailViewDialog.INSTANCE.stopThread();
+		}
 	}
 	
-//	public void drawItem(ImageIcon icon, String name)
-//	{	
-//	}
-	
-//	public Image getScaledImage(ImageIcon srcImg)
-//	{
-//		int w = 100;
-//		int h = 100;
-//		
-//	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-//	    Graphics2D g2 = resizedImg.createGraphics();
-//
-//	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-//	    g2.drawImage(srcImg.getImage(), 0, 0, w, h, null);
-//	    g2.dispose();
-//
-//	    return resizedImg;
-//	}
+	class NoItemMouseAdapter extends MouseAdapter
+	{
+		@Override
+		public void mouseEntered(MouseEvent e)
+		{
+			if( ItemDetailViewDialog.INSTANCE.isShowing() )
+				ItemDetailViewDialog.INSTANCE.dismiss();
+		}
+	}
 }
