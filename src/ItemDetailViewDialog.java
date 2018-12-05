@@ -28,7 +28,7 @@ public enum ItemDetailViewDialog
 	public static void init()
 	{
 		itemDetailViewDialog.setUndecorated(true);
-		itemDetailViewDialog.setBackground(new Color(0, 0, 0, 210));
+		itemDetailViewDialog.setBackground(new Color(0, 0, 0, 225));
 		itemDetailViewDialog.setSize(width, height);
 		itemDetailViewDialog.setResizable(false);
 		itemDetailViewDialog.setAutoRequestFocus(false);
@@ -36,7 +36,7 @@ public enum ItemDetailViewDialog
 	
 	public static void addComponent()
 	{
-		itemDetailViewPanel = new ItemDetailViewPanel(null);
+		itemDetailViewPanel = new ItemDetailViewPanel();
 		
 		itemDetailViewDialog.add(itemDetailViewPanel);
 	}

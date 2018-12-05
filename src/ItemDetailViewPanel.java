@@ -1,12 +1,93 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.ImageObserver;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.AttributedCharacterIterator;
+import java.util.Enumeration;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.html.CSS;
 import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+
+class ItemInfoHTML
+{
+	private static final String ITEM_INFO_CSS = "res/etc/item_info.css"; 
+	public static StyleSheet styleSheet;
+	
+	public static StyleSheet loadStyleSheet()
+	{	
+		if( styleSheet == null )
+		{				
+			try
+			{
+				InputStream is = new FileInputStream(ITEM_INFO_CSS);
+				BufferedReader br = new BufferedReader(new InputStreamReader(is));
+				styleSheet = new StyleSheet();
+				styleSheet.loadRules(br, null);
+				
+				Enumeration<?> rules = styleSheet.getStyleNames();
+		        while (rules.hasMoreElements()) 
+		        {
+		        	String name = (String) rules.nextElement();
+		        	Style rule = styleSheet.getStyle(name);
+		        	System.out.println(rule.toString());
+		        }
+				
+				br.close();
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+				styleSheet = null;
+			}
+		}
+		
+		return styleSheet;
+	}
+	
+	public static String getInfoHTMLByItem(Item item)
+	{
+//		URL url = ImageResource.class.getResource(this.itemLabel[i][j].getItem(0).getImageIcon().getDescription());
+	
+		return 
+				"<div id='item-info'>" +
+					"<div id='item-info-name'>" + item.getName() + "(+" + item.getEnhancement() + ")</div>" +
+					"<div id='item-info-required'>" + "Required " + 115 + "Lv" + "</div>" + 
+					"<div id='item-info-option'>" + 
+						"ATK 2150<br>" + 
+						"STR 80<br>" + 
+						"DEX 50<br>" + 
+						"STR 80<br>" + 
+						"DEX 50<br>" + 
+						"STR 80<br>" + 
+						"DEX 50<br>" + 
+						"STR 80<br>" + 
+						"DEX 50<br>" + 
+					"</div>" +
+				"</div>";
+	}
+	
+	public static String getDetailHTMLByItem(Item item)
+	{
+//		URL url = ImageResource.class.getResource(this.itemLabel[i][j].getItem(0).getImageIcon().getDescription());
+	
+		return 
+				"<div id='item-detail'>" + 
+					"&nbsp고대의 마왕 벨제부브를 토벌하고 얻은 마검이다." + 
+					"드롭할 수 있는 무기 중에서 최상위 클래스에 속한다." +
+					"<br><br><br><br>ddd<br><br>dd" + 
+				"</div>";
+	}
+}
 
 class ItemDetailViewImagePanel extends CustomPanel
 {
@@ -37,7 +118,7 @@ class ItemDetailViewImagePanel extends CustomPanel
 		this.enhancementLabel.setBounds(0, 5, 195, 15);
 		this.enhancementLabel.setForeground(new Color(255, 0, 0));
 		this.enhancementLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		this.enhancementLabel.setFont(new Font("Verdana", Font.BOLD, 15));
+		this.enhancementLabel.setFont(new Font("", Font.BOLD, 15));
 		this.ratingLabel.setBounds(0, 180, 195, 15);
 		this.ratingLabel.setForeground(new Color(250, 208, 50));
 		this.ratingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -64,18 +145,9 @@ class ItemDetailViewImagePanel extends CustomPanel
 }
 
 class ItemDetailViewInfoPanel extends CustomPanel
-{
-	private Item item;
-	
-	JPanel infoPanel, detailPanel;
-	JLabel nameLabel, requiredLabel, optionLabel, detailLabel;
-	
-	public ItemDetailViewInfoPanel(Item item)
-	{
-		this.item = item;
-		this.init();
-		this.addComponent();
-	}
+{	
+	JTextPane infoTextPane, detailTextPane;
+	JScrollPane infoScrollPane, detailScrollPane;
 	
 	protected void init()
 	{
@@ -84,132 +156,69 @@ class ItemDetailViewInfoPanel extends CustomPanel
 	}
 	
 	protected void addComponent()
-	{
-		this.infoPanel = new JPanel(null);
-		this.detailPanel = new JPanel(null);
+	{	
+		this.infoTextPane = new JTextPane();
+		this.detailTextPane = new JTextPane();
 		
-		this.nameLabel = new JLabel();
-		this.requiredLabel = new JLabel();
-		this.optionLabel = new JLabel();
-		this.detailLabel = new JLabel();
+		// Invisible Vertical Scroll
+		JScrollBar infoScrollBar = new JScrollBar(JScrollBar.VERTICAL) {
+			@Override
+			public boolean isVisible() {
+				return true;
+			}
+		};
+		JScrollBar detailScrollBar = new JScrollBar(JScrollBar.VERTICAL) {
+			@Override
+			public boolean isVisible() {
+				return true;
+			}
+		};
 		
-		this.infoPanel.setBounds(0, 0, 200, 120);
-		this.infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(250, 208, 50)));	// U L D R 순서로 Border
-		this.infoPanel.setOpaque(false);
-		this.detailPanel.setBounds(0, 120, 200, 80);
-		this.detailPanel.setOpaque(false);
+		this.infoScrollPane = new JScrollPane(this.infoTextPane);
+		this.detailScrollPane = new JScrollPane(this.detailTextPane);
 		
-//		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//		jsp.setBounds(0, 0, 200, 120);
-//		jsp.getViewport().setOpaque(false);
-//		jsp.setOpaque(false);
+		this.infoScrollPane.setBounds(0, 0, 200, 120);
+		this.infoScrollPane.setOpaque(false);
+		this.infoScrollPane.setBorder(null);
+		this.infoScrollPane.setVerticalScrollBar(infoScrollBar);
+		this.infoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		this.infoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.infoScrollPane.getViewport().setOpaque(false);
+		this.infoScrollPane.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(250, 208, 50)));	// U L D R 순서로 Border
+		this.detailScrollPane.setBounds(0, 120, 200, 80);
+		this.detailScrollPane.setOpaque(false);
+		this.detailScrollPane.setBorder(null);
+		this.detailScrollPane.setVerticalScrollBar(detailScrollBar);
+		this.detailScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		this.detailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.detailScrollPane.getViewport().setOpaque(false);
 		
-//		HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-//		htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
-//		htmlEditorKit.getStyleSheet().addRule("div { color: white; }");
-	
-//		this.infoPane.setForeground(new Color(255, 255, 255));
-//		this.infoPane.setFont(new Font("Consolas", Font.PLAIN, 12));
-//		this.infoPane.setOpaque(false);
-//		this.infoPane.setContentType("text/html");
-//		this.infoPane.setEditable(false);
-//		this.infoPane.setEditorKit(htmlEditorKit);
+		HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+		htmlEditorKit.setStyleSheet(ItemInfoHTML.loadStyleSheet());
+
+		this.infoTextPane.setOpaque(false);
+		this.infoTextPane.setEditable(false);
+		this.infoTextPane.setEditorKit(htmlEditorKit);
+		this.detailTextPane.setOpaque(false);
+		this.detailTextPane.setEditable(false);
+		this.detailTextPane.setEditorKit(htmlEditorKit);
 		
-		JScrollPane infoScrollPane = new JScrollPane(this.infoPanel);
-		JScrollPane detailScrollPane = new JScrollPane(this.detailPanel);
-//		
-		infoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		detailScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//		
-		infoScrollPane.setBounds(0, 0, 200, 120);
-		infoScrollPane.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(250, 208, 50)));	// U L D R 순서로 Border
-		detailScrollPane.setBounds(0, 120, 200, 80);
-		infoScrollPane.getViewport().setOpaque(false);
-		infoScrollPane.setOpaque(false);
-		detailScrollPane.getViewport().setOpaque(false);
-		detailScrollPane.setOpaque(false);
-//		
-////		this.infoPanel.setBounds(0, 0, 200, 120);
-////		this.infoPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(250, 208, 50)));	// U L D R 순서로 Border
-////		this.detailPanel.setBounds(0, 120, 200, 80);
-		this.infoPanel.setOpaque(false);
-		this.detailPanel.setOpaque(false);
-//		
-		this.nameLabel.setBounds(5, 5, 190, 20);
-		this.nameLabel.setForeground(new Color(217, 153, 49));
-		this.nameLabel.setFont(new Font("Consolas", Font.BOLD, 18));
-//		this.nameLabel.setBackground(Color.RED);
-//		this.nameLabel.setOpaque(true);
-		this.requiredLabel.setBounds(5, 30, 190, 15);
-		this.requiredLabel.setForeground(new Color(255, 0, 0));
-		this.requiredLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		this.requiredLabel.setFont(new Font("Consolas", Font.BOLD, 12));
-		this.optionLabel.setBounds(5, 50, 190, 70);
-		this.optionLabel.setForeground(new Color(255, 255, 255));
-		this.optionLabel.setFont(new Font("Consolas", Font.BOLD, 12));
-		this.detailLabel.setBounds(3, 3, 194, 74);
-		this.detailLabel.setForeground(new Color(255, 255, 255));
-		this.detailLabel.setFont(new Font("Consolas", Font.PLAIN, 12));
-		this.detailLabel.setPreferredSize(new Dimension(194, 200));
-//		
-		this.infoPanel.add(nameLabel);
-		this.infoPanel.add(requiredLabel);
-		this.infoPanel.add(optionLabel);
-		this.detailPanel.add(detailLabel);
 		
 		this.add(infoScrollPane);
 		this.add(detailScrollPane);
-//		this.add(infoPanel);
-//		this.add(detailPanel);
 	}
 	
 	public void updateItem(Item item)
 	{		
-		this.item = item;
-		
-		this.nameLabel.setText("<html>" + item.getName() + "(+" + item.getEnhancement() + ")" + "</html>");
-//		this.nameLabel.setText(item.getName() + "(+" + item.getEnhancement() + ")");
-		this.requiredLabel.setText("Required " + 115 + "Lv");
-		this.optionLabel.setText(
-				"<html>" +
-					"ATK 2150<br>" + 
-					"STR 80<br>" + 
-					"DEX 50<br>" + 
-					"STR 80<br>" + 
-					"DEX 50<br>" + 
-					"STR 80<br>" + 
-					"DEX 50<br>" + 
-					"STR 80<br>" + 
-					"DEX 50<br>" + 
-				"</html>");
-		this.detailLabel.setText(
-				"<html>&nbsp고대의 마왕 벨제부브를 토벌하고 얻은 마검이다." + 
-				"드롭할 수 있는 무기 중에서 최상위 클래스에 속한다.<br><br><br><br>ddd<br><br>dd" +
-				"</html>");
-		
-//		this.detailPane.setText(
-//				"<html><div scrolling id='item-detai'>&nbsp고대의 마왕 벨제부브를 토벌하고 얻은 마검이다." + 
-//				"드롭할 수 있는 무기 중에서 최상위 클래스에 속한다.dddd<br>dddd<br>ddd<br><br>ddd<br><br>dd" +
-//				"</div></html>");
-		
-//		this.revalidate();
-//		this.repaint();
-	}
+		this.infoTextPane.setText(ItemInfoHTML.getInfoHTMLByItem(item));
+		this.detailTextPane.setText(ItemInfoHTML.getDetailHTMLByItem(item));
+	}	
 }
 
 public class ItemDetailViewPanel extends CustomPanel
-{
-	private Item item;
-	
+{	
 	ItemDetailViewImagePanel cp1;
 	ItemDetailViewInfoPanel cp2;
-	
-	public ItemDetailViewPanel(Item item)
-	{
-		this.item = item;
-		this.init();
-		this.addComponent();
-	}
 	
 	protected void init()
 	{
@@ -219,8 +228,8 @@ public class ItemDetailViewPanel extends CustomPanel
 	
 	protected void addComponent()
 	{
-		this.cp1 = new ItemDetailViewImagePanel(item);
-		this.cp2 = new ItemDetailViewInfoPanel(item);
+		this.cp1 = new ItemDetailViewImagePanel(null);
+		this.cp2 = new ItemDetailViewInfoPanel();
 		
 		this.cp1.setBounds(0, 0, 200, 200);
 		this.cp2.setBounds(200, 0, 200, 200);
@@ -231,7 +240,6 @@ public class ItemDetailViewPanel extends CustomPanel
 	
 	public void updateItem(Item item)
 	{
-		this.item = item;
 		this.cp1.updateItem(item);
 		this.cp2.updateItem(item);
 	}
