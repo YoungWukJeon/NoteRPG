@@ -39,7 +39,7 @@ class ItemInfoHTML
 		        {
 		        	String name = (String) rules.nextElement();
 		        	Style rule = styleSheet.getStyle(name);
-		        	System.out.println(rule.toString());
+//		        	System.out.println(rule.toString());
 		        }
 				
 				br.close();
@@ -139,6 +139,8 @@ class ItemDetailViewImagePanel extends CustomPanel
 	{
 		super.paintComponent(g);
 		
+//		g.drawImage(ImageResource.itemBorder.getImage(), 0, 0, this.getWidth() - 1, this.getHeight() - 1, this);
+		
 		if( this.item != null )
 			g.drawImage(this.item.getImageIcon().getImage(), 15, 15, 170, 170, this);
 	}
@@ -203,7 +205,6 @@ class ItemDetailViewInfoPanel extends CustomPanel
 		this.detailTextPane.setEditable(false);
 		this.detailTextPane.setEditorKit(htmlEditorKit);
 		
-		
 		this.add(infoScrollPane);
 		this.add(detailScrollPane);
 	}
@@ -212,6 +213,9 @@ class ItemDetailViewInfoPanel extends CustomPanel
 	{		
 		this.infoTextPane.setText(ItemInfoHTML.getInfoHTMLByItem(item));
 		this.detailTextPane.setText(ItemInfoHTML.getDetailHTMLByItem(item));
+		
+		this.infoScrollPane.getVerticalScrollBar().setValue(0);
+		this.detailScrollPane.getVerticalScrollBar().setValue(0);
 	}	
 }
 
