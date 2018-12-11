@@ -15,6 +15,9 @@ public class ImageResource
 	public static ImageIcon twoHandsSwords;
 	
 	public static ImageIcon itemBorder;
+	public static ImageIcon statusCollapsedBorder;
+	public static ImageIcon statusExpandedBorder;
+	public static ImageIcon levelBorder;
 	
 	public ImageResource()
 	{
@@ -27,5 +30,8 @@ public class ImageResource
 		twoHandsSwords = new ImageIcon("res/item/weapon/Two hands swords.png");
 		
 		itemBorder = new ImageIcon("res/layout/item_border.png");
+		statusCollapsedBorder = new ImageIcon("res/layout/status_collapsed_border.png");
+		statusExpandedBorder = new ImageIcon("res/layout/status_expanded_border.png");
+		levelBorder = new ImageIcon("res/layout/level_border.png");
 	}
 }

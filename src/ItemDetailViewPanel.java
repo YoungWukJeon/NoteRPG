@@ -221,8 +221,8 @@ class ItemDetailViewInfoPanel extends CustomPanel
 
 public class ItemDetailViewPanel extends CustomPanel
 {	
-	ItemDetailViewImagePanel cp1;
-	ItemDetailViewInfoPanel cp2;
+	ItemDetailViewImagePanel itemDetailViewImagePanel;
+	ItemDetailViewInfoPanel itemDetailViewInfoPanel;
 	
 	protected void init()
 	{
@@ -232,19 +232,19 @@ public class ItemDetailViewPanel extends CustomPanel
 	
 	protected void addComponent()
 	{
-		this.cp1 = new ItemDetailViewImagePanel(null);
-		this.cp2 = new ItemDetailViewInfoPanel();
+		this.itemDetailViewImagePanel = new ItemDetailViewImagePanel(null);
+		this.itemDetailViewInfoPanel = new ItemDetailViewInfoPanel();
 		
-		this.cp1.setBounds(0, 0, 200, 200);
-		this.cp2.setBounds(200, 0, 200, 200);
+		this.itemDetailViewImagePanel.setBounds(0, 0, 200, 200);
+		this.itemDetailViewInfoPanel.setBounds(200, 0, 200, 200);
 		
-		this.add(cp1);
-		this.add(cp2);
+		this.add(itemDetailViewImagePanel);
+		this.add(itemDetailViewInfoPanel);
 	}
 	
 	public void updateItem(Item item)
 	{
-		this.cp1.updateItem(item);
-		this.cp2.updateItem(item);
+		this.itemDetailViewImagePanel.updateItem(item);
+		this.itemDetailViewInfoPanel.updateItem(item);
 	}
 }

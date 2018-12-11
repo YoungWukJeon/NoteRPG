@@ -25,30 +25,11 @@ public class ItemLabel extends CustomLabel
 		this.setLayout(new BorderLayout());
 //		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-//		if( this.getItemList() != null )
-//		{
-//			HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
-//			htmlEditorKit.setStyleSheet(ItemToolTip.loadStyleSheet());
-////			htmlEditorKit.getStyleSheet().addRule("div { position: inherited; }");			
-//			this.setToolTipText(ItemToolTip.getToolTipTextByHTML(this.getItem(0)));
-//			ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
-//		}
-		
 		if( this.getItemList() != null )
 			this.addMouseListener(new ItemMouseAdapter(this.getItem(0)));
 		else
 			this.addMouseListener(new NoItemMouseAdapter());
 	}
-	
-//	public JToolTip createToolTip()
-//	{
-//		JToolTip tip = super.createToolTip();
-//        tip.setBackground(new Color(0, 0, 0, 210));
-//        tip.setOpaque(true);
-//        this.repaint();
-//        
-//        return tip;
-//	}
 	
 	public LinkedList<Item> getItemList()
 	{
