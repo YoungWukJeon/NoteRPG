@@ -149,11 +149,46 @@ class LevelLabel extends CustomLabel
 
 class StatusLabel extends CustomLabel
 {
-	enum StatusType {}
+	enum StatusType { JOB, ATK, DEF, STR, DEX, LUK, INT }
+	
+	StatusType statusType;
+	Object value;
+	
+	StatusLabel(StatusType statusType, Object value)
+	{
+		this.statusType = statusType;
+		this.value = value;
+		this.init();
+		this.changeText();
+	}
 	
 	protected void init()
 	{
-		
+		this.setForeground(new Color(255, 255, 255));
+		this.setFont(new Font("", Font.BOLD, 12));
+	}
+	
+	public void changeValue(Object value)
+	{
+		this.value = value;
+		this.changeText();
+	}
+	
+	public void changeText()
+	{	
+		if( this.statusType != null )
+		{
+			if( this.value instanceof String )
+			{
+				if( this.statusType.ordinal() == 0 )
+					this.setText(String.format("%s : %s", "직업", this.value));	
+				else
+					this.setText(String.format("%s : %s", this.statusType.name(), this.value));
+			}	
+			else if( this.value instanceof Integer )
+				this.setText(String.format("%s : %,d", this.statusType.name(), this.value));
+		}
+		this.repaint();
 	}
 }
 
@@ -161,8 +196,8 @@ class StatusInfoPanel extends CustomPanel
 {
 	PointLabel hpLabel, mpLabel, expLabel;
 	LevelLabel levelLabel;
-	StatusLabel jobLabel, atkLabel;
-	
+	StatusLabel jobLabel, atkLabel, defLabel, strLabel, dexLabel, lukLabel, intLabel;
+
 	protected void init()
 	{
 		this.setLayout(null);
@@ -170,24 +205,61 @@ class StatusInfoPanel extends CustomPanel
 	}
 
 	protected void addComponent()
-	{
-		// TODO Auto-generated method stub
+	{	
 		this.hpLabel = new PointLabel(PointLabel.PointType.HP, 725, 512);
 		this.mpLabel = new PointLabel(PointLabel.PointType.MP, 125, 125);
 		this.expLabel = new PointLabel(PointLabel.PointType.EXP, 127, 35);
 		this.levelLabel = new LevelLabel(37);
+		this.jobLabel = new StatusLabel(StatusLabel.StatusType.JOB, "검사");
+		this.atkLabel = new StatusLabel(StatusLabel.StatusType.ATK, 530);
+		this.defLabel = new StatusLabel(StatusLabel.StatusType.DEF, 300);
+		this.strLabel = new StatusLabel(StatusLabel.StatusType.STR, 50);
+		this.dexLabel = new StatusLabel(StatusLabel.StatusType.DEX, 127);
+		this.lukLabel = new StatusLabel(StatusLabel.StatusType.LUK, 30);
+		this.intLabel = new StatusLabel(StatusLabel.StatusType.INT, 20);
+		
+		StatusLabel l1 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
+		StatusLabel l2 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
+		StatusLabel l3 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
+		StatusLabel l4 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
+		StatusLabel l5 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
 		
 		this.hpLabel.setBounds(10, 10, 150, 15);
 		this.mpLabel.setBounds(10, 30, 150, 15);
 		this.expLabel.setBounds(10, 50, 150, 15);
-		this.levelLabel.setBounds(10, 70, 50, 50);
+		this.levelLabel.setBounds(10, 75, 50, 50);
+		this.jobLabel.setBounds(70, 75, 90, 20);
+		this.atkLabel.setBounds(70, 100, 90, 20);
+		this.defLabel.setBounds(10, 135, 150, 20);
+		this.strLabel.setBounds(10, 160, 150, 20);
+		this.dexLabel.setBounds(10, 185, 150, 20);
+		this.lukLabel.setBounds(10, 210, 150, 20);
+		this.intLabel.setBounds(10, 235, 150, 20);
+		
+		l1.setBounds(10, 260, 150, 20);
+		l2.setBounds(10, 285, 150, 20);
+		l3.setBounds(10, 310, 150, 20);
+		l4.setBounds(10, 335, 150, 20);
+		l5.setBounds(10, 360, 150, 20);
 		
 		this.add(hpLabel);
 		this.add(mpLabel);
 		this.add(expLabel);
 		this.add(levelLabel);
+		this.add(jobLabel);
+		this.add(atkLabel);
+		this.add(defLabel);
+		this.add(strLabel);
+		this.add(dexLabel);
+		this.add(lukLabel);
+		this.add(intLabel);
+		
+		this.add(l1);
+		this.add(l2);
+		this.add(l3);
+		this.add(l4);
+		this.add(l5);
 	}
-	
 }
 
 public class StatusPanel extends CustomPanel
@@ -197,12 +269,7 @@ public class StatusPanel extends CustomPanel
 	StatusInfoPanel statusInfoPanel;
 	
 	boolean isExpanded = false;
-	
-	public StatusPanel()
-	{
-		super();
-	}
-	
+
 	protected void init()
 	{
 		this.setLayout(new BorderLayout());
@@ -226,9 +293,8 @@ public class StatusPanel extends CustomPanel
 		
 		this.statusScrollPane.setBorder(null);
 		this.statusScrollPane.setVerticalScrollBar(statusScrollBar);
-		this.statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		this.statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		this.statusScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
 		this.expandBtn.setFont(new Font("", Font.BOLD, 9));
 		this.expandBtn.setBackground(new Color(68, 114, 196));
 		this.expandBtn.setForeground(new Color(255, 255, 255));
