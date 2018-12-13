@@ -205,24 +205,24 @@ class StatusInfoPanel extends CustomPanel
 	}
 
 	protected void addComponent()
-	{	
-		this.hpLabel = new PointLabel(PointLabel.PointType.HP, 725, 512);
-		this.mpLabel = new PointLabel(PointLabel.PointType.MP, 125, 125);
-		this.expLabel = new PointLabel(PointLabel.PointType.EXP, 127, 35);
-		this.levelLabel = new LevelLabel(37);
-		this.jobLabel = new StatusLabel(StatusLabel.StatusType.JOB, "검사");
-		this.atkLabel = new StatusLabel(StatusLabel.StatusType.ATK, 530);
-		this.defLabel = new StatusLabel(StatusLabel.StatusType.DEF, 300);
-		this.strLabel = new StatusLabel(StatusLabel.StatusType.STR, 50);
-		this.dexLabel = new StatusLabel(StatusLabel.StatusType.DEX, 127);
-		this.lukLabel = new StatusLabel(StatusLabel.StatusType.LUK, 30);
-		this.intLabel = new StatusLabel(StatusLabel.StatusType.INT, 20);
+	{
+		this.hpLabel = new PointLabel(PointLabel.PointType.HP, Main.characterInfo.getMaxHP(), Main.characterInfo.getCurrentHP());
+		this.mpLabel = new PointLabel(PointLabel.PointType.MP, Main.characterInfo.getMaxMP(), Main.characterInfo.getCurrentMP());
+		this.expLabel = new PointLabel(PointLabel.PointType.EXP, Main.characterInfo.getMaxEXP(), Main.characterInfo.getCurrentEXP());
+		this.levelLabel = new LevelLabel(Main.characterInfo.getLevel());
+		this.jobLabel = new StatusLabel(StatusLabel.StatusType.JOB, Main.characterInfo.getJob());
+		this.atkLabel = new StatusLabel(StatusLabel.StatusType.ATK, Main.characterInfo.getAtk());
+		this.defLabel = new StatusLabel(StatusLabel.StatusType.DEF, Main.characterInfo.getDef());
+		this.strLabel = new StatusLabel(StatusLabel.StatusType.STR, Main.characterInfo.getStatusStr());
+		this.dexLabel = new StatusLabel(StatusLabel.StatusType.DEX, Main.characterInfo.getStatusDex());
+		this.lukLabel = new StatusLabel(StatusLabel.StatusType.LUK, Main.characterInfo.getStatusLuk());
+		this.intLabel = new StatusLabel(StatusLabel.StatusType.INT, Main.characterInfo.getStatusInt());
 		
 		StatusLabel l1 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
 		StatusLabel l2 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
 		StatusLabel l3 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
 		StatusLabel l4 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
-		StatusLabel l5 = new StatusLabel(StatusLabel.StatusType.ATK, 200);
+		StatusLabel l5 = new StatusLabel(StatusLabel.StatusType.ATK, 201);
 		
 		this.hpLabel.setBounds(10, 10, 150, 15);
 		this.mpLabel.setBounds(10, 30, 150, 15);
@@ -254,19 +254,19 @@ class StatusInfoPanel extends CustomPanel
 		this.add(lukLabel);
 		this.add(intLabel);
 		
-		this.add(l1);
-		this.add(l2);
-		this.add(l3);
-		this.add(l4);
-		this.add(l5);
+//		this.add(l1);
+//		this.add(l2);
+//		this.add(l3);
+//		this.add(l4);
+//		this.add(l5);
 	}
 }
 
 public class StatusPanel extends CustomPanel
 {
-	JScrollPane statusScrollPane;
 	JButton expandBtn;
 	StatusInfoPanel statusInfoPanel;
+	JScrollPane statusScrollPane;
 	
 	boolean isExpanded = false;
 
@@ -279,10 +279,8 @@ public class StatusPanel extends CustomPanel
 	
 	protected void addComponent()
 	{
-		this.expandBtn = new JButton("▼");
-		
 		this.statusInfoPanel = new StatusInfoPanel();
-		this.statusScrollPane = new JScrollPane(this.statusInfoPanel);
+		this.expandBtn = new JButton("▼");
 		
 		JScrollBar statusScrollBar = new JScrollBar(JScrollBar.VERTICAL) {
 			@Override
@@ -291,10 +289,13 @@ public class StatusPanel extends CustomPanel
 			}
 		};
 		
+		this.statusInfoPanel.setPreferredSize(new Dimension(this.getWidth() - 10, 135 + 25 * (this.statusInfoPanel.getComponentCount() - 6)));
+		this.statusScrollPane = new JScrollPane(this.statusInfoPanel);
 		this.statusScrollPane.setBorder(null);
 		this.statusScrollPane.setVerticalScrollBar(statusScrollBar);
-		this.statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		this.statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		this.statusScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.statusScrollPane.getVerticalScrollBar().setUnitIncrement(12);
 		this.expandBtn.setFont(new Font("", Font.BOLD, 9));
 		this.expandBtn.setBackground(new Color(68, 114, 196));
 		this.expandBtn.setForeground(new Color(255, 255, 255));

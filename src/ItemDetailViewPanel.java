@@ -185,6 +185,7 @@ class ItemDetailViewInfoPanel extends CustomPanel
 		this.infoScrollPane.setVerticalScrollBar(infoScrollBar);
 		this.infoScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		this.infoScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.infoScrollPane.getVerticalScrollBar().setUnitIncrement(12);
 		this.infoScrollPane.getViewport().setOpaque(false);
 		this.infoScrollPane.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(250, 208, 50)));	// U L D R 순서로 Border
 		this.detailScrollPane.setBounds(0, 120, 200, 80);
@@ -193,6 +194,7 @@ class ItemDetailViewInfoPanel extends CustomPanel
 		this.detailScrollPane.setVerticalScrollBar(detailScrollBar);
 		this.detailScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		this.detailScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.detailScrollPane.getVerticalScrollBar().setUnitIncrement(12);
 		this.detailScrollPane.getViewport().setOpaque(false);
 		
 		HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
